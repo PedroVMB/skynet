@@ -32,6 +32,22 @@ html {
   border-right-style: none !important;
 }
 
+.snack-error{
+    @include mat.snack-bar-overrides((
+    button-color: white,
+    container-color: red,
+    supporting-text-color: white
+  ));
+}
+
+.snack-success{
+    @include mat.snack-bar-overrides((
+    button-color: white,
+    container-color: green,
+    supporting-text-color: white
+  ));
+}
+
 body {
   // Default the application to a light color theme. This can be changed to
   // `dark` to enable the dark color theme, or to `light dark` to defer to the
