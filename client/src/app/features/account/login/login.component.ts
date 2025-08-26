@@ -6,7 +6,6 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { AccountService } from '../../../core/services/account.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatActionList } from "@angular/material/list";
 
 @Component({
   selector: 'app-login',
@@ -16,8 +15,7 @@ import { MatActionList } from "@angular/material/list";
     MatFormField,
     MatInput,
     MatLabel,
-    MatButton,
-    MatActionList
+    MatButton
 ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
