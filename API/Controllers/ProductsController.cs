@@ -9,7 +9,7 @@ namespace API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController(IGenericRepository<Product> _context) : BaseApiController
+public class ProductsController(IUnitOfWork unit) : BaseApiController
 {
 
     [HttpGet]
@@ -17,13 +17,13 @@ public class ProductsController(IGenericRepository<Product> _context) : BaseApiC
     {
         var spec = new ProductSpecification(specParams);
 
-        return await CreatePageResult(_context, spec, specParams.PageIndex, specParams.PageSize);
+        return await CreatePageResult(unit.Repository<Product>(), spec, specParams.PageIndex, specParams.PageSize);
     }
 
     [HttpGet("{id:int}")] // api.products/2
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
-        var product = await _context.GetByIdAsync(id);
+        var product = await unit.Repository<Product>().GetByIdAsync(id);
 
         if (product == null) return NotFound();
 
@@ -33,9 +33,9 @@ public class ProductsController(IGenericRepository<Product> _context) : BaseApiC
     [HttpPost]
     public async Task<ActionResult<Product>> CreateProduct(Product product)
     {
-        _context.Add(product);
+        unit.Repository<Product>().Add(product);
 
-        if (await _context.SaveAllAsync())
+        if (await unit.Complete())
             return CreatedAtAction("GeTProduct", new { id = product.Id}, product);
 
         return BadRequest("Problem creating product");
@@ -47,9 +47,9 @@ public class ProductsController(IGenericRepository<Product> _context) : BaseApiC
         if (product.Id != id || !ProductExists(id))
             return BadRequest("Cannot update this product");
 
-        _context.Update(product);
+        unit.Repository<Product>().Update(product);
 
-        if (await _context.SaveAllAsync())
+        if (await unit.Complete())
             return NoContent();
 
         return BadRequest("Problem updating the product");
@@ -59,13 +59,13 @@ public class ProductsController(IGenericRepository<Product> _context) : BaseApiC
     public async Task<ActionResult> DeleteProduct(int id)
     {
 
-        var product = await _context.GetByIdAsync(id);
+        var product = await unit.Repository<Product>().GetByIdAsync(id);
 
         if (product == null) return NotFound();
 
-        _context.Remove(product);
+        unit.Repository<Product>().Remove(product);
 
-         if (await _context.SaveAllAsync())
+         if (await unit.Complete())
             return NoContent();
 
         return BadRequest("Problem deleting the product");
@@ -76,7 +76,7 @@ public class ProductsController(IGenericRepository<Product> _context) : BaseApiC
     {
         var spec = new BrandListSpecification();
 
-        return Ok(await _context.ListAsync(spec));
+        return Ok(await unit.Repository<Product>().ListAsync(spec));
     }
 
     [HttpGet("types")]
@@ -84,12 +84,12 @@ public class ProductsController(IGenericRepository<Product> _context) : BaseApiC
     {
         var spec = new TypeListSpecification();
 
-        return Ok(await _context.ListAsync(spec));
+        return Ok(await unit.Repository<Product>().ListAsync(spec));
     }
 
     private bool ProductExists(int id)
     {
-        return _context.Exists(id);
+        return unit.Repository<Product>().Exists(id);
     }
 
 }

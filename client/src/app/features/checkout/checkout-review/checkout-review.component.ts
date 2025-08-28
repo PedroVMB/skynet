@@ -1,7 +1,6 @@
 import { Component, inject, Input } from '@angular/core';
 import { CartService } from '../../../core/services/cart.service';
 import { CurrencyPipe } from '@angular/common';
-import { CdkStepLabel } from "@angular/cdk/stepper";
 import { ConfirmationToken } from '@stripe/stripe-js';
 import { AddressPipe } from "../../../shared/pipes/address-pipe";
 import { CardPipe } from "../../../shared/pipes/card-pipe";
@@ -10,7 +9,6 @@ import { CardPipe } from "../../../shared/pipes/card-pipe";
   selector: 'app-checkout-review',
   imports: [
     CurrencyPipe,
-    CdkStepLabel,
     AddressPipe,
     CardPipe
 ],
